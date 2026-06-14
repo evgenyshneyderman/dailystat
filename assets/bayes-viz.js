@@ -3,6 +3,41 @@
 const BayesViz = (() => {
   const charts = [];
 
+  const PALETTE = {
+    blue: "#5b9fd4",
+    blueDim: "#3d6f94",
+    green: "#6bc9a8",
+    gold: "#e8b86d",
+    purple: "#c47ad4",
+    grid: "rgba(139, 156, 179, 0.14)",
+    tick: "#8b9cb3"
+  };
+
+  // Global Chart.js theming for the dark UI — smoother, more consistent visuals.
+  if (typeof Chart !== "undefined") {
+    Chart.defaults.color = PALETTE.tick;
+    Chart.defaults.borderColor = PALETTE.grid;
+    Chart.defaults.font.family =
+      "system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif";
+    Chart.defaults.font.size = 12;
+    Chart.defaults.animation.duration = 500;
+    Chart.defaults.animation.easing = "easeOutQuart";
+    Chart.defaults.elements.point.radius = 0;
+    Chart.defaults.elements.point.hoverRadius = 5;
+    Chart.defaults.elements.line.borderWidth = 2.5;
+    Chart.defaults.elements.line.tension = 0.35;
+    Chart.defaults.elements.bar.borderRadius = 4;
+    Chart.defaults.plugins.legend.labels.boxWidth = 12;
+    Chart.defaults.plugins.legend.labels.boxHeight = 12;
+    Chart.defaults.plugins.legend.labels.usePointStyle = true;
+    Chart.defaults.plugins.legend.labels.padding = 16;
+    Chart.defaults.plugins.tooltip.backgroundColor = "rgba(15, 20, 25, 0.92)";
+    Chart.defaults.plugins.tooltip.borderColor = "rgba(91, 159, 212, 0.4)";
+    Chart.defaults.plugins.tooltip.borderWidth = 1;
+    Chart.defaults.plugins.tooltip.padding = 10;
+    Chart.defaults.plugins.tooltip.cornerRadius = 6;
+  }
+
   function destroyCharts() {
     while (charts.length) charts.pop().destroy();
   }
@@ -214,7 +249,7 @@ const BayesViz = (() => {
     ];
     const p = panel(
       "Joint PMF heatmap (discrete X, Y)",
-      "Each cell is P(X=i, Y=j). Marginals sum rows/columns. Think: rider type × trip outcome."
+      "Each cell is P(X=i, Y=j). Marginals sum rows/columns. Think: customer segment × purchase outcome."
     );
     const canvas = document.createElement("canvas");
     const wrap = el("div", "chart-wrap");
@@ -417,7 +452,7 @@ const BayesViz = (() => {
     let n = 100, sigma = 2.5, conf = 0.95, xbar = 5.2;
     const p = panel(
       "Confidence interval width",
-      "Suppose x̄ = 5.2 from an experiment metric. How does n and confidence level affect margin of error?"
+      "Suppose x̄ = 5.2 from a sample. How do n and the confidence level affect the margin of error?"
     );
     const controls = el("div", "controls");
     const fEl = formula("");
@@ -466,10 +501,10 @@ const BayesViz = (() => {
   }
 
   function renderProportionZTest(root) {
-    let p0 = 0.12, phat = 0.146, n = 120000;
+    let p0 = 0.5, phat = 0.56, n = 200;
     const p = panel(
       "One-sample proportion z-test",
-      "Uber-style: completion rate baseline p₀ vs observed p̂. Drag sliders — see z and whether we reject H₀."
+      "Test an observed proportion p̂ against a hypothesized p₀ (e.g. a survey result vs a claimed rate). Drag the sliders and watch z move toward the shaded rejection region as the gap grows or n increases."
     );
     const controls = el("div", "controls");
     const fEl = formula("");
@@ -483,6 +518,7 @@ const BayesViz = (() => {
       const se = Math.sqrt(p0 * (1 - p0) / n);
       const z = (phat - p0) / se;
       const pval = 2 * (1 - normCDF(Math.abs(z)));
+      const zClamped = Math.max(-4, Math.min(4, z));
       fEl.textContent =
         `z = (p̂ − p₀) / √(p₀(1−p₀)/n)\n` +
         `  = (${fmt(phat, 4)} − ${fmt(p0, 4)}) / ${fmt(se, 6)}\n` +
@@ -491,10 +527,12 @@ const BayesViz = (() => {
         `<div class="stat"><span>z = </span>${fmt(z, 3)}</div>` +
         `<div class="stat"><span>two-sided p ≈ </span>${fmt(pval, 4)}</div>` +
         `<div class="stat"><span>Reject H₀ (α=0.05)? </span>${pval < 0.05 ? "Yes" : "No"}</div>`;
-      const xs = [], density = [];
-      for (let x = -4; x <= 4; x += 0.1) {
+      const xs = [], density = [], rejection = [];
+      for (let x = -4; x <= 4.0001; x += 0.1) {
+        const d = normalPDF(x, 0, 1);
         xs.push(fmt(x, 1));
-        density.push(normalPDF(x, 0, 1));
+        density.push(d);
+        rejection.push(Math.abs(x) >= 1.96 ? d : null);
       }
       if (chart) chart.destroy();
       chart = makeChart(canvas, {
@@ -502,21 +540,26 @@ const BayesViz = (() => {
         data: {
           labels: xs,
           datasets: [
-            { label: "Standard normal", data: density, borderColor: "#5b9fd4", pointRadius: 0 },
-            { label: "z obs", data: xs.map((_, i) => Math.abs(parseFloat(xs[i]) - z) < 0.15 ? normalPDF(z, 0, 1) : null), borderColor: "#e8b86d", pointRadius: 6, showLine: false }
+            { label: "Standard normal (H₀)", data: density, borderColor: PALETTE.blue, backgroundColor: "rgba(91,159,212,0.12)", fill: true },
+            { label: "Rejection region |z| ≥ 1.96", data: rejection, borderColor: "transparent", backgroundColor: "rgba(232,184,109,0.35)", fill: true },
+            { label: `Observed z${Math.abs(z) > 4 ? " (off scale →)" : ""}`, data: xs.map(x => Math.abs(parseFloat(x) - zClamped) < 0.05 ? normalPDF(zClamped, 0, 1) : null), borderColor: PALETTE.green, backgroundColor: PALETTE.green, showLine: false, pointRadius: 6, pointHoverRadius: 7 }
           ]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          scales: { x: { title: { display: true, text: "z" } }, y: { title: { display: true, text: "Density" } } }
+          interaction: { intersect: false, mode: "index" },
+          scales: {
+            x: { title: { display: true, text: "z" } },
+            y: { min: 0, title: { display: true, text: "Density" } }
+          }
         }
       });
     }
 
-    controls.appendChild(slider("p₀ (null)", 0.05, 0.3, 0.01, p0, v => { p0 = v; redraw(); }));
-    controls.appendChild(slider("p̂ (observed)", 0.05, 0.3, 0.001, phat, v => { phat = v; redraw(); }));
-    controls.appendChild(slider("n", 1000, 200000, 1000, n, v => { n = v; redraw(); }));
+    controls.appendChild(slider("p₀ (null)", 0.1, 0.9, 0.01, p0, v => { p0 = v; redraw(); }));
+    controls.appendChild(slider("p̂ (observed)", 0.1, 0.9, 0.01, phat, v => { phat = v; redraw(); }));
+    controls.appendChild(slider("n", 30, 2000, 10, n, v => { n = v; redraw(); }));
     p.appendChild(controls);
     p.appendChild(fEl);
     p.appendChild(stats);
@@ -526,29 +569,60 @@ const BayesViz = (() => {
   }
 
   function renderTwoProportion(root) {
-    let p1 = 0.142, p2 = 0.136, n1 = 60000, n2 = 60000;
-    const p = panel("Two-sample proportion test", "Compare treatment vs control completion rates. Pooled vs unpooled SE — watch z shift.");
+    let p1 = 0.16, p2 = 0.12, n1 = 2000, n2 = 2000;
+    const p = panel(
+      "Two-sample proportion test",
+      "Compare two groups' success rates — for example, conversion of website version A vs B. Under H₀ the rates are equal, so the standard error is pooled."
+    );
     const controls = el("div", "controls");
     const fEl = formula("");
     const stats = el("div", "stats-row");
+    const canvas = document.createElement("canvas");
+    const wrap = el("div", "chart-wrap");
+    wrap.appendChild(canvas);
+    let chart;
 
     function redraw() {
       const pooled = (p1 * n1 + p2 * n2) / (n1 + n2);
       const se = Math.sqrt(pooled * (1 - pooled) * (1 / n1 + 1 / n2));
       const z = (p1 - p2) / se;
+      const pval = 2 * (1 - normCDF(Math.abs(z)));
       fEl.textContent =
         `p̂_pool = ${fmt(pooled, 4)}\n` +
+        `SE_pool = ${fmt(se, 5)}\n` +
         `z = (p̂₁ − p̂₂) / SE_pool = ${fmt(z, 3)}`;
       stats.innerHTML =
         `<div class="stat"><span>Δ = </span>${fmt((p1 - p2) * 100, 2)} pp</div>` +
-        `<div class="stat"><span>z = </span>${fmt(z, 3)}</div>`;
+        `<div class="stat"><span>z = </span>${fmt(z, 3)}</div>` +
+        `<div class="stat"><span>two-sided p ≈ </span>${fmt(pval, 4)}</div>` +
+        `<div class="stat"><span>Reject H₀ (α=0.05)? </span>${pval < 0.05 ? "Yes" : "No"}</div>`;
+      if (chart) chart.destroy();
+      chart = makeChart(canvas, {
+        type: "bar",
+        data: {
+          labels: ["Group 1", "Group 2"],
+          datasets: [{
+            label: "Observed proportion",
+            data: [p1 * 100, p2 * 100],
+            backgroundColor: [PALETTE.blue, PALETTE.green]
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: { y: { beginAtZero: true, title: { display: true, text: "Proportion (%)" } } }
+        }
+      });
     }
 
-    controls.appendChild(slider("p̂₁ treatment", 0.1, 0.2, 0.001, p1, v => { p1 = v; redraw(); }));
-    controls.appendChild(slider("p̂₂ control", 0.1, 0.2, 0.001, p2, v => { p2 = v; redraw(); }));
+    controls.appendChild(slider("p̂₁ group 1", 0.02, 0.4, 0.005, p1, v => { p1 = v; redraw(); }));
+    controls.appendChild(slider("p̂₂ group 2", 0.02, 0.4, 0.005, p2, v => { p2 = v; redraw(); }));
+    controls.appendChild(slider("n per group", 100, 10000, 100, n1, v => { n1 = v; n2 = v; redraw(); }));
     p.appendChild(controls);
     p.appendChild(fEl);
     p.appendChild(stats);
+    p.appendChild(wrap);
     root.appendChild(p);
     redraw();
   }
@@ -559,7 +633,7 @@ const BayesViz = (() => {
     let chart;
     const p = panel(
       "Chi-square goodness of fit",
-      "Observed vs expected counts across categories (e.g. trip outcomes by hour). χ² = Σ (O−E)²/E"
+      "Observed vs expected counts across categories (e.g. customer visits by weekday, or die-roll outcomes). χ² = Σ (O−E)²/E"
     );
     const canvas = document.createElement("canvas");
     const wrap = el("div", "chart-wrap");

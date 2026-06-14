@@ -3,18 +3,39 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Bayes Lesson</title>
+  <title>DailyStat Lesson</title>
   <link rel="stylesheet" href="/assets/bayes-viz.css" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </head>
 <body>
   <header class="lesson-header">
     <a href="/" class="back">← All lessons</a>
+    <p id="lesson-meta" class="lesson-meta"></p>
     <h1 id="lesson-title">Loading…</h1>
     <p id="lesson-subtitle"></p>
   </header>
-  <main id="app" class="viz-app"></main>
-  <section id="glossary" class="glossary"></section>
+
+  <article class="lesson-page">
+    <div id="why-it-matters" class="callout" hidden></div>
+    <section id="overview" class="lesson-section" hidden></section>
+    <section id="objectives" class="lesson-section" hidden></section>
+    <section id="video-section" class="lesson-section" hidden></section>
+    <section id="recap-section" class="lesson-section" hidden></section>
+    <section id="example" class="lesson-section" hidden></section>
+    <section id="formulas" class="lesson-section" hidden></section>
+    <section id="interactive" class="lesson-section">
+      <h2 class="section-heading">Interactive exploration</h2>
+      <div id="app" class="viz-app"></div>
+    </section>
+    <section id="takeaways" class="lesson-section" hidden></section>
+    <section id="practice" class="lesson-section" hidden></section>
+    <section id="explore" class="lesson-section" hidden></section>
+    <section id="external" class="lesson-section" hidden></section>
+    <section id="glossary" class="glossary" hidden></section>
+    <nav id="lesson-nav" class="lesson-nav" hidden></nav>
+  </article>
+
+  <script src="/assets/lessons-data.js"></script>
   <script src="/assets/bayes-viz.js"></script>
   <script src="/assets/app.js"></script>
 </body>
