@@ -22,10 +22,10 @@ const LESSONS = {
       "Apply total expectation to subgroup-weighted averages"
     ],
     youtube: {
-      url: "https://www.youtube.com/watch?v=dFaqy--4-Pk",
-      title: "Lecture 5: Law of Total Probability (Stat 110)",
-      channel: "Harvard University / Joe Blitzstein",
-      durationMin: 50
+      url: "https://www.youtube.com/watch?v=7t9jyikrG7w",
+      title: "The Law of Total Probability",
+      channel: "jbstatistics",
+      durationMin: 10
     },
     example: {
       title: "Worked scenario: factory defect rate",
@@ -54,7 +54,7 @@ const LESSONS = {
       hint: "Treat each region as a partition piece: E = 0.30×0.6 + 0.50×0.4."
     },
     exploreDeeper: [
-      "When would you use total expectation instead of a simple weighted average of observed lifts?",
+      "When would you use total expectation instead of a simple weighted average of observed rates?",
       "How does Simpson's paradox relate to careless aggregation across partitions?"
     ]
   },
@@ -108,15 +108,15 @@ const LESSONS = {
       "Judge whether two metrics appear independent"
     ],
     youtube: {
-      url: "https://www.youtube.com/watch?v=kd3zKHr6Rys",
-      title: "Lecture 20: Multivariate Distributions (Stat 110)",
-      channel: "Harvard University / Joe Blitzstein",
-      durationMin: 52
+      url: "https://www.youtube.com/watch?v=AELR4O5RVl4",
+      title: "Probabilities from a Contingency / Joint Probability Table",
+      channel: "Joshua Emmanuel",
+      durationMin: 8
     },
     external: [
       {
-        title: "Seeing Theory — Joint Distributions (interactive)",
-        url: "https://seeing-theory.brown.edu/basic-probability/chapter-4/"
+        title: "Seeing Theory — Compound Probability (interactive)",
+        url: "https://seeing-theory.brown.edu/compound-probability/index.html"
       }
     ],
     example: {
@@ -292,8 +292,8 @@ const LESSONS = {
     },
     external: [
       {
-        title: "Probability Course — Exponential & memoryless property",
-        url: "https://probabilitycourse.com/chapter4/4_2_2_exponential.php"
+        title: "Wikipedia — Exponential distribution (incl. memorylessness)",
+        url: "https://en.wikipedia.org/wiki/Exponential_distribution"
       }
     ],
     example: {
@@ -611,9 +611,9 @@ const RECAP_ITEMS = {
     summary: "Aggregate conditional rates across a partition of the sample space.",
     source: "Stat 110 Lecture 10",
     youtube: {
-      url: "https://www.youtube.com/watch?v=dFaqy--4-Pk",
-      title: "Stat 110 — Law of Total Probability",
-      durationMin: 50
+      url: "https://www.youtube.com/watch?v=7t9jyikrG7w",
+      title: "jbstatistics — The Law of Total Probability",
+      durationMin: 10
     },
     vizUrl: "/l/20"
   },
@@ -622,9 +622,9 @@ const RECAP_ITEMS = {
     summary: "Joint, marginal, and conditional PMFs for paired metrics.",
     source: "Stat 110 Lecture 11",
     youtube: {
-      url: "https://www.youtube.com/watch?v=kd3zKHr6Rys",
-      title: "Stat 110 — Multivariate Distributions",
-      durationMin: 52
+      url: "https://www.youtube.com/watch?v=AELR4O5RVl4",
+      title: "Joint / Contingency Probability Tables",
+      durationMin: 8
     },
     vizUrl: "/l/22"
   },

@@ -79,8 +79,9 @@ function renderVideo(yt) {
 
   el.innerHTML = `
     <h2 class="section-heading">Video lesson</h2>
-    <p class="video-caption"><a href="${yt.url}" target="_blank" rel="noopener">${yt.title}</a>${meta ? ` <span class="muted">(${meta})</span>` : ""}</p>
-    ${vid ? `<div class="video-embed"><iframe src="https://www.youtube-nocookie.com/embed/${vid}" title="${escapeAttr(yt.title)}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>` : `<p><a class="btn" href="${yt.url}" target="_blank" rel="noopener">Watch on YouTube</a></p>`}
+    <p class="video-caption"><a href="${yt.url}" rel="noopener noreferrer">${yt.title}</a>${meta ? ` <span class="muted">(${meta})</span>` : ""}</p>
+    ${vid ? `<div class="video-embed"><iframe src="https://www.youtube-nocookie.com/embed/${vid}" title="${escapeAttr(yt.title)}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen loading="lazy"></iframe></div>` : ""}
+    <p><a class="btn" href="${yt.url}" rel="noopener noreferrer">Watch on YouTube ↗</a></p>
   `;
   show("video-section");
 }
@@ -106,7 +107,7 @@ function renderRecapSection(lessonId, lesson) {
         <div class="recap-actions">
           ${hasPage ? `<a class="btn" href="/l/${rid}">Full lesson page</a>` : ""}
           ${vizUrl && hasPage ? `<a href="${vizUrl}#interactive">Jump to interactive</a>` : ""}
-          ${yt && !vid ? `<a href="${yt.url}" target="_blank" rel="noopener">Watch video</a>` : ""}
+          ${yt ? `<a href="${yt.url}" rel="noopener noreferrer">Watch video ↗</a>` : ""}
         </div>
       </article>
     `;
@@ -174,7 +175,7 @@ function renderExternal(links) {
   if (!links?.length) return;
   const el = document.getElementById("external");
   el.innerHTML =
-    `<h2 class="section-heading">Further reading</h2><ul class="external-list">${links.map(l => `<li><a href="${l.url}" target="_blank" rel="noopener">${l.title}</a></li>`).join("")}</ul>`;
+    `<h2 class="section-heading">Further reading</h2><ul class="external-list">${links.map(l => `<li><a href="${l.url}" rel="noopener noreferrer">${l.title} ↗</a></li>`).join("")}</ul>`;
   show("external");
 }
 
