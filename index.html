@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bayes Stats — Interactive Lessons</title>
+  <link rel="stylesheet" href="/assets/bayes-viz.css" />
+</head>
+<body>
+  <header class="site-header">
+    <h1>Bayes — Interactive Statistics</h1>
+    <p>Pilot lessons 20–30. Open from your daily Telegram lesson.</p>
+  </header>
+  <main class="lesson-grid" id="grid"></main>
+  <script>
+    const lessons = [
+      { id: 20, title: "Law of Total Probability" },
+      { id: 21, title: "Week 3 Recap" },
+      { id: 22, title: "Multivariate / Joint PMFs" },
+      { id: 23, title: "Sampling Distributions" },
+      { id: 24, title: "CLT & Correlation" },
+      { id: 25, title: "Exponential Distribution" },
+      { id: 26, title: "Confidence Intervals" },
+      { id: 27, title: "Week 4 Recap" },
+      { id: 28, title: "One-Sample Proportion Z-Test" },
+      { id: 29, title: "Two-Sample Proportions" },
+      { id: 30, title: "Chi-Square Goodness of Fit" }
+    ];
+    const grid = document.getElementById("grid");
+    for (const l of lessons) {
+      const a = document.createElement("a");
+      a.className = "lesson-card";
+      a.href = `/l/${l.id}`;
+      a.innerHTML = `<span class="lesson-id">Lesson ${l.id}</span><span class="lesson-title">${l.title}</span>`;
+      grid.appendChild(a);
+    }
+  </script>
+</body>
+</html>
