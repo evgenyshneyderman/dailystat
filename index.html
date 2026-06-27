@@ -18,9 +18,11 @@
     <p>Each lesson includes a curated YouTube explainer, overview text, worked scenarios, an interactive widget, and practice problems.</p>
   </footer>
   <script src="/assets/lessons-data.js"></script>
+  <script src="/assets/bayes-viz.js"></script>
+  <script src="/assets/lessons-extra.js"></script>
   <script>
     const grid = document.getElementById("grid");
-    for (const id of LESSON_IDS) {
+    for (const id of Object.keys(LESSONS).map(Number).sort((a, b) => a - b)) {
       const l = LESSONS[id];
       const a = document.createElement("a");
       a.className = "lesson-card";

@@ -196,10 +196,11 @@ function renderGlossary(id, formulas) {
 }
 
 function renderNav(id) {
-  const idx = LESSON_IDS.indexOf(id);
+  const lessonIds = Object.keys(LESSONS).map(Number).sort((a, b) => a - b);
+  const idx = lessonIds.indexOf(id);
   if (idx < 0) return;
-  const prev = idx > 0 ? LESSON_IDS[idx - 1] : null;
-  const next = idx < LESSON_IDS.length - 1 ? LESSON_IDS[idx + 1] : null;
+  const prev = idx > 0 ? lessonIds[idx - 1] : null;
+  const next = idx < lessonIds.length - 1 ? lessonIds[idx + 1] : null;
   const el = document.getElementById("lesson-nav");
   el.innerHTML = `
     ${prev ? `<a class="nav-prev" href="/l/${prev}">← Lesson ${prev}</a>` : "<span></span>"}
