@@ -1,6 +1,179 @@
 /* Overlay lesson content for pages added after the original 20-30 pilot. */
 
 Object.assign(LESSONS, {
+  17: {
+    title: "Bernoulli and Binomial Distributions",
+    subtitle: "Counting successes in independent yes/no trials",
+    unit: "Distributions",
+    source: "Stat 110 Lecture 8",
+    readTimeMin: 22,
+    template: "binomial",
+    whyItMatters:
+      "Many marketplace and experimentation metrics are success counts: completed trips, accepted dispatches, converted sessions, fraud flags. The binomial distribution is the first model to reach for when the setup is repeated yes/no trials.",
+    overview: [
+      "A Bernoulli random variable is one yes/no trial: success with probability p, failure with probability 1-p.",
+      "A binomial random variable counts successes across n independent Bernoulli trials with the same success probability p.",
+      "The interactive lets you move n and p to see how the probability mass shifts, including the expected number of successes."
+    ],
+    objectives: [
+      "Recognize a Bernoulli trial",
+      "Use Binomial(n, p) to count successes",
+      "Interpret the PMF shape as n and p change",
+      "Connect expected successes to n times p"
+    ],
+    youtube: {
+      url: "https://www.youtube.com/watch?v=J8jNoF-K8E8",
+      title: "The Binomial Distribution and Test, Clearly Explained!!!",
+      channel: "StatQuest with Josh Starmer",
+      durationMin: 15
+    },
+    example: {
+      title: "Worked scenario: checkout conversion",
+      body:
+        "Suppose 100 independent rider sessions each have a 4% chance of checkout completion. The number of completions is approximately Binomial(n=100, p=0.04), with expected completions n×p = 4."
+    },
+    keyFormulas: [
+      {
+        text: "P(X = k) = C(n,k) p^k (1-p)^(n-k)\nE[X] = np",
+        gloss: [
+          ["n", "number of independent trials"],
+          ["p", "success probability per trial"],
+          ["k", "number of successes"]
+        ]
+      }
+    ],
+    takeaways: [
+      "Binomial counts successes in a fixed number of trials",
+      "The model assumes independence and stable p",
+      "Expected successes are n times p",
+      "The distribution shape becomes more concentrated as n grows"
+    ],
+    practice: {
+      prompt:
+        "A dispatch has 30% acceptance probability. In 10 independent offers, what is the expected number accepted?",
+      hint: "Use E[X] = np."
+    },
+    exploreDeeper: [
+      "What breaks if offers are not independent?",
+      "How would heterogeneous rider or driver segments change the model?"
+    ]
+  },
+
+  18: {
+    title: "Normal Approximation to the Binomial",
+    subtitle: "When success counts start looking bell-shaped",
+    unit: "Distributions",
+    source: "OpenIntro Statistics ch.4",
+    readTimeMin: 20,
+    template: "normal-binomial",
+    whyItMatters:
+      "Large experiments often involve binomial-like counts, but exact binomial calculations become clunky. The normal approximation explains why z-tests for proportions work.",
+    overview: [
+      "When n is large and p is not too close to 0 or 1, a binomial distribution can be approximated by a normal curve.",
+      "The approximation uses mean np and standard deviation √(np(1-p)).",
+      "The interactive overlays a normal curve on top of binomial probabilities so you can see where the approximation is good or shaky."
+    ],
+    objectives: [
+      "Compute the binomial mean and standard deviation",
+      "Explain the large-n approximation intuition",
+      "Notice failures when p is extreme or n is small",
+      "Connect this approximation to proportion tests"
+    ],
+    youtube: {
+      url: "https://www.youtube.com/watch?v=J8jNoF-K8E8",
+      title: "The Binomial Distribution and Test, Clearly Explained!!!",
+      channel: "StatQuest with Josh Starmer",
+      durationMin: 15
+    },
+    example: {
+      title: "Worked scenario: large conversion count",
+      body:
+        "If 20,000 sessions convert with probability 4%, the binomial mean is 800 and SD is √(20000×0.04×0.96) ≈ 27.7. Counts near 800 can be reasoned about with a normal curve."
+    },
+    keyFormulas: [
+      {
+        text: "X ~ Binomial(n,p)\nX ≈ Normal(np, np(1-p))",
+        gloss: [
+          ["np", "mean number of successes"],
+          ["np(1-p)", "variance of the success count"]
+        ]
+      }
+    ],
+    takeaways: [
+      "The approximation improves with larger n",
+      "It is weaker when p is very small or very large",
+      "Normal approximations are the bridge to z-tests",
+      "Always sanity-check expected successes and failures"
+    ],
+    practice: {
+      prompt:
+        "For n=1,000 and p=0.2, what are the approximate mean and SD of the success count?",
+      hint: "Mean np; SD √(np(1-p))."
+    },
+    exploreDeeper: [
+      "Why do many z-tests require enough expected successes and failures?",
+      "What does continuity correction try to fix?"
+    ]
+  },
+
+  19: {
+    title: "Geometric, Poisson, Expectation and Variance",
+    subtitle: "Waiting for first success and counting rare events",
+    unit: "Distributions",
+    source: "Stat 110 Lecture 9",
+    readTimeMin: 24,
+    template: "geometric-poisson",
+    whyItMatters:
+      "Operational systems often ask either “how long until something happens?” or “how many rare events appear in a window?” Geometric and Poisson models give quick first-pass answers.",
+    overview: [
+      "The geometric distribution models the number of trials until the first success.",
+      "The Poisson distribution models event counts in a fixed interval when events are rare-ish and occur at a roughly stable rate.",
+      "The interactive compares both: waiting-time probabilities for geometric and count probabilities for Poisson."
+    ],
+    objectives: [
+      "Distinguish waiting-time and count questions",
+      "Use p to reason about geometric waiting",
+      "Use lambda to reason about Poisson counts",
+      "Interpret expectation as a long-run average"
+    ],
+    youtube: {
+      url: "https://www.youtube.com/watch?v=oI3hZJqXJuc",
+      title: "The Main Ideas behind Probability Distributions",
+      channel: "StatQuest with Josh Starmer",
+      durationMin: 11
+    },
+    example: {
+      title: "Worked scenario: support incidents",
+      body:
+        "If a city averages 3 severe support incidents per hour, a Poisson(λ=3) model gives a quick distribution over 0, 1, 2, ... incidents in the next hour. If a driver accepts with probability 0.4 per offer, a geometric model describes the wait until first acceptance."
+    },
+    keyFormulas: [
+      {
+        text: "Geometric: P(X=k) = (1-p)^(k-1)p\nPoisson: P(X=k) = e^(-λ) λ^k / k!",
+        gloss: [
+          ["p", "success probability per trial"],
+          ["λ", "expected event count per interval"],
+          ["k", "wait length or event count, depending on model"]
+        ]
+      }
+    ],
+    takeaways: [
+      "Geometric is for waiting until first success",
+      "Poisson is for counts in a fixed interval",
+      "Expectation summarizes the long-run center",
+      "Model choice should match the question, not just the data type"
+    ],
+    practice: {
+      prompt:
+        "If an offer has acceptance probability 0.25, what is the expected wait until first acceptance?",
+      hint: "For geometric waiting time, E[X] = 1/p."
+    },
+    exploreDeeper: [
+      "When would event clustering break a Poisson model?",
+      "How does geometric waiting relate to negative binomial waiting?"
+    ]
+  },
+
   31: {
     title: "Bayes' Rule Deep Dive",
     subtitle: "Base rates, false positives, and posterior probability",
@@ -205,6 +378,212 @@ Object.assign(RECAP_ITEMS, {
   }
 });
 
+function extraChoose(n, k) {
+  if (k < 0 || k > n) return 0;
+  k = Math.min(k, n - k);
+  let out = 1;
+  for (let i = 1; i <= k; i++) out = (out * (n - k + i)) / i;
+  return out;
+}
+
+function extraFactorial(n) {
+  let out = 1;
+  for (let i = 2; i <= n; i++) out *= i;
+  return out;
+}
+
+function extraNormalPDF(x, mu, sigma) {
+  const z = (x - mu) / sigma;
+  return Math.exp(-0.5 * z * z) / (sigma * Math.sqrt(2 * Math.PI));
+}
+
+function extraSlider(label, min, max, step, value, onInput) {
+  const wrap = document.createElement("div");
+  wrap.className = "control";
+  const lab = document.createElement("label");
+  lab.innerHTML = `${label} <output>${value}</output>`;
+  const inp = document.createElement("input");
+  inp.type = "range";
+  inp.min = min;
+  inp.max = max;
+  inp.step = step;
+  inp.value = value;
+  inp.addEventListener("input", () => {
+    const v = Number.isInteger(step) ? parseInt(inp.value, 10) : parseFloat(inp.value);
+    lab.querySelector("output").textContent = v;
+    onInput(v);
+  });
+  wrap.appendChild(lab);
+  wrap.appendChild(inp);
+  return wrap;
+}
+
+BayesViz.RENDERERS["binomial"] = function renderBinomial(root) {
+  let n = 20;
+  let prob = 0.3;
+  const p = BayesViz.panel(
+    "Binomial success counts",
+    "Move n and p. Each bar is the probability of exactly k successes."
+  );
+  const controls = document.createElement("div");
+  controls.className = "controls";
+  const fEl = BayesViz.formula("");
+  const canvas = document.createElement("canvas");
+  const wrap = document.createElement("div");
+  wrap.className = "chart-wrap";
+  wrap.appendChild(canvas);
+  let chart;
+
+  function redraw() {
+    const labels = [];
+    const data = [];
+    for (let k = 0; k <= n; k++) {
+      labels.push(String(k));
+      data.push(extraChoose(n, k) * Math.pow(prob, k) * Math.pow(1 - prob, n - k));
+    }
+    fEl.textContent = `E[X] = np = ${(n * prob).toFixed(2)} successes`;
+    if (chart) chart.destroy();
+    chart = new Chart(canvas, {
+      type: "bar",
+      data: { labels, datasets: [{ data, backgroundColor: "#5b9fd4" }] },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { title: { display: true, text: "Successes k" } },
+          y: { title: { display: true, text: "P(X = k)" } }
+        }
+      }
+    });
+  }
+
+  controls.appendChild(extraSlider("Trials n", 1, 60, 1, n, v => { n = v; redraw(); }));
+  controls.appendChild(extraSlider("Success probability p", 0.01, 0.99, 0.01, prob, v => { prob = v; redraw(); }));
+  p.appendChild(controls);
+  p.appendChild(fEl);
+  p.appendChild(wrap);
+  root.appendChild(p);
+  redraw();
+};
+
+BayesViz.RENDERERS["normal-binomial"] = function renderNormalBinomial(root) {
+  let n = 80;
+  let prob = 0.25;
+  const p = BayesViz.panel(
+    "Normal approximation to binomial",
+    "Bars show exact binomial probabilities; the line is a normal curve with the same mean and SD."
+  );
+  const controls = document.createElement("div");
+  controls.className = "controls";
+  const fEl = BayesViz.formula("");
+  const canvas = document.createElement("canvas");
+  const wrap = document.createElement("div");
+  wrap.className = "chart-wrap";
+  wrap.appendChild(canvas);
+  let chart;
+
+  function redraw() {
+    const mu = n * prob;
+    const sigma = Math.sqrt(n * prob * (1 - prob));
+    const lo = Math.max(0, Math.floor(mu - 4 * sigma));
+    const hi = Math.min(n, Math.ceil(mu + 4 * sigma));
+    const labels = [];
+    const exact = [];
+    const approx = [];
+    for (let k = lo; k <= hi; k++) {
+      labels.push(String(k));
+      exact.push(extraChoose(n, k) * Math.pow(prob, k) * Math.pow(1 - prob, n - k));
+      approx.push(extraNormalPDF(k, mu, sigma));
+    }
+    fEl.textContent = `Mean np = ${mu.toFixed(2)}\nSD sqrt(np(1-p)) = ${sigma.toFixed(2)}`;
+    if (chart) chart.destroy();
+    chart = new Chart(canvas, {
+      type: "bar",
+      data: {
+        labels,
+        datasets: [
+          { type: "bar", label: "Exact binomial", data: exact, backgroundColor: "rgba(91,159,212,0.65)" },
+          { type: "line", label: "Normal approximation", data: approx, borderColor: "#e8b86d", backgroundColor: "transparent" }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          x: { title: { display: true, text: "Successes k" } },
+          y: { title: { display: true, text: "Probability / density" } }
+        }
+      }
+    });
+  }
+
+  controls.appendChild(extraSlider("Trials n", 10, 250, 5, n, v => { n = v; redraw(); }));
+  controls.appendChild(extraSlider("Success probability p", 0.02, 0.98, 0.01, prob, v => { prob = v; redraw(); }));
+  p.appendChild(controls);
+  p.appendChild(fEl);
+  p.appendChild(wrap);
+  root.appendChild(p);
+  redraw();
+};
+
+BayesViz.RENDERERS["geometric-poisson"] = function renderGeometricPoisson(root) {
+  let prob = 0.25;
+  let lambda = 3;
+  const p = BayesViz.panel(
+    "Waiting vs counting",
+    "Geometric models wait until first success; Poisson models event counts in a fixed interval."
+  );
+  const controls = document.createElement("div");
+  controls.className = "controls";
+  const fEl = BayesViz.formula("");
+  const canvas = document.createElement("canvas");
+  const wrap = document.createElement("div");
+  wrap.className = "chart-wrap";
+  wrap.appendChild(canvas);
+  let chart;
+
+  function redraw() {
+    const labels = Array.from({ length: 15 }, (_, i) => String(i + 1));
+    const geo = labels.map(v => {
+      const k = parseInt(v, 10);
+      return Math.pow(1 - prob, k - 1) * prob;
+    });
+    const pois = labels.map(v => {
+      const k = parseInt(v, 10) - 1;
+      return Math.exp(-lambda) * Math.pow(lambda, k) / extraFactorial(k);
+    });
+    fEl.textContent = `Geometric E[X] = 1/p = ${(1 / prob).toFixed(2)} trials\nPoisson E[X] = λ = ${lambda.toFixed(2)} events`;
+    if (chart) chart.destroy();
+    chart = new Chart(canvas, {
+      type: "bar",
+      data: {
+        labels,
+        datasets: [
+          { label: "Geometric P(wait = k)", data: geo, backgroundColor: "rgba(91,159,212,0.65)" },
+          { label: "Poisson P(count = k-1)", data: pois, backgroundColor: "rgba(107,201,168,0.65)" }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          x: { title: { display: true, text: "k" } },
+          y: { title: { display: true, text: "Probability" } }
+        }
+      }
+    });
+  }
+
+  controls.appendChild(extraSlider("Success probability p", 0.05, 0.8, 0.01, prob, v => { prob = v; redraw(); }));
+  controls.appendChild(extraSlider("Poisson rate lambda", 0.2, 10, 0.1, lambda, v => { lambda = v; redraw(); }));
+  p.appendChild(controls);
+  p.appendChild(fEl);
+  p.appendChild(wrap);
+  root.appendChild(p);
+  redraw();
+};
+
 BayesViz.RENDERERS["bayes-rule"] = function renderBayesRule(root) {
   let prevalence = 0.005;
   let sensitivity = 0.9;
@@ -386,4 +765,3 @@ BayesViz.RENDERERS["negative-binomial"] = function renderNegativeBinomial(root) 
   root.appendChild(p);
   redraw();
 };
-
